@@ -3,23 +3,56 @@ title = "The Crane Game!";
 description = `
 `;
 
-characters = [];
+characters = [
+`
+    ll
+    ll
+    ll
+    ll
+  LLllLL
+LL      LL
+  LL  LL
+`
+];
 
-options = {
-};
-
-// global variables/consts
 const G = {
-	TIMER_START: 15
+	TIMER_START: 15,
+	WIDTH: 100,
+	HEIGHT: 150
 }
 
+options = {	
+	viewSize: {x: G.WIDTH, y: G.HEIGHT}
+};
+
+/**
+ * @typedef {{
+* pos: Vector,
+* speed: number 
+* }} Player
+*/
+
+/**
+* @type { Player }
+*/
+let crane;
+
 function update() {
-	if (!ticks) {	
+	if (!ticks) {
+		crane = {
+			pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.25),
+			speed: 1
+		};
 	}
-	else {
-		// display timer text
-		text("Time: "+time, 3, 10);
-	}
+	// display timer text
+	text("Time: "+time, 3, 10);
+
+	//color("cyan");
+	crane.pos.x += crane.speed;
+	if(crane.pos.x > G.WIDTH || crane.pos.x < 0)
+		crane.speed *= -1;
+    char("a", crane.pos);
+	line(0, G.HEIGHT/4 -5, G.WIDTH, G.HEIGHT/4 -5);
 }
 
 // timer functionailty
