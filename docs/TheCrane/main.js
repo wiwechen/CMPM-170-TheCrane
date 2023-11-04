@@ -6,9 +6,17 @@ description = `
 characters = [
 `
 LLLL
+  LL
     LL
     LL
   LL
+`
+,
+`
+LLLL
+    LL
+    LL
+    LL
 `
 ];
 
@@ -45,13 +53,23 @@ function update() {
 	text("Time: "+time, 3, 10);
 
 	//color("cyan");
-	crane.pos.x += crane.speed;
+	if(input.isPressed){
+		crane.pos.y += 1;
+		char("b", crane.pos.x + 2, crane.pos.y );
+		char("b", crane.pos.x - 2, crane.pos.y , {
+			mirror: {x : -1}
+		})
+	}
+	else{
+		crane.pos.y == G.HEIGHT/4 ? 0 : crane.pos.y = G.HEIGHT/4;
+		crane.pos.x += crane.speed;
+		char("a", crane.pos.x + 2, crane.pos.y);
+		char("a", crane.pos.x - 2, crane.pos.y, {
+			mirror: {x : -1}
+		})
+	}
 	if(crane.pos.x > G.WIDTH || crane.pos.x < 0)
 		crane.speed *= -1;
-    char("a", crane.pos.x + 2, crane.pos.y);
-	char("a", crane.pos.x - 2, crane.pos.y, {
-		mirror: {x : -1}
-	})
 	line(0, G.HEIGHT/4 -5, G.WIDTH, G.HEIGHT/4 -5);
 }
 
