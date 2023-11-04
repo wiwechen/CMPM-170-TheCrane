@@ -5,13 +5,10 @@ description = `
 
 characters = [
 `
-    ll
-    ll
-    ll
-    ll
-  LLllLL
-LL      LL
-  LL  LL
+LLLL
+    LL
+    LL
+  LL
 `
 ];
 
@@ -51,7 +48,10 @@ function update() {
 	crane.pos.x += crane.speed;
 	if(crane.pos.x > G.WIDTH || crane.pos.x < 0)
 		crane.speed *= -1;
-    char("a", crane.pos);
+    char("a", crane.pos.x + 2, crane.pos.y);
+	char("a", crane.pos.x - 2, crane.pos.y, {
+		mirror: {x : -1}
+	})
 	line(0, G.HEIGHT/4 -5, G.WIDTH, G.HEIGHT/4 -5);
 }
 
