@@ -42,17 +42,55 @@ options = {
 */
 let crane;
 
+/**
+ * @typedef {{
+* size: number,
+* }}Box
+*/
+
+/**
+ * @type { Box }
+ */
+let redBox;
+let blueBox;
+let yellowBox;
+
 function update() {
 	if (!ticks) {
 		crane = {
 			pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.25),
 			speed: 1
 		};
+
+		redBox = {
+			size: 7
+		};
+
+		blueBox = {
+			size: 8
+		};
+
+		yellowBox = {
+			size: 9
+		};
 	}
 	// display timer text
 	text("Time: "+time, 3, 10);
 
 	//color("cyan");
+
+	//creating Boxes Here
+	color("red");
+	box(G.WIDTH * 0.5, G.HEIGHT * 0.75, redBox.size);
+	color("blue");
+	box(G.WIDTH*0.25, G.HEIGHT* 0.75, blueBox.size);
+	color("yellow");
+	box(G.WIDTH*0.75, G.HEIGHT* 0.75, yellowBox.size);
+
+
+
+
+	color("light_black");
 	if(input.isPressed){
 		crane.pos.y += 1;
 		char("b", crane.pos.x + 2, crane.pos.y );
