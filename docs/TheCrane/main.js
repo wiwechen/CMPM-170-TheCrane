@@ -21,9 +21,10 @@ LLLL
 ];
 
 const G = {
-	TIMER_START: 15,
 	WIDTH: 100,
-	HEIGHT: 150
+	HEIGHT: 150,
+	TIMER_START: 15,
+	BOX_SIZE: 7
 }
 
 options = {	
@@ -44,16 +45,20 @@ let crane;
 
 /**
  * @typedef {{
+ * pos: Vector
+ * color: Color,
 * size: number,
 * }}Box
 */
 
 /**
- * @type { Box }
+ * @type { Box[] }
  */
-let redBox;
-let blueBox;
-let yellowBox;
+let boxes = [];
+/**
+ * @type { Color[] }
+ */
+let possibleColors = ["red", "blue", "yellow"];
 
 function update() {
 	if (!ticks) {
@@ -62,33 +67,22 @@ function update() {
 			speed: 1
 		};
 
-		redBox = {
-			size: 7
-		};
-
-		blueBox = {
-			size: 8
-		};
-
-		yellowBox = {
-			size: 9
-		};
+		// initialize boxes
+		let width = 0.25;
+		for (let color of possibleColors) {
+			let box = {pos: vec(G.WIDTH*width, G.HEIGHT*0.75), color: color, size: G.BOX_SIZE};
+			boxes.push(box);
+			width += 0.25;
+		}
 	}
 	// display timer text
 	text("Time: "+time, 3, 10);
 
-	//color("cyan");
-
 	//creating Boxes Here
-	color("red");
-	box(G.WIDTH * 0.5, G.HEIGHT * 0.75, redBox.size);
-	color("blue");
-	box(G.WIDTH*0.25, G.HEIGHT* 0.75, blueBox.size);
-	color("yellow");
-	box(G.WIDTH*0.75, G.HEIGHT* 0.75, yellowBox.size);
-
-
-
+	for (let bx of boxes) {
+		color(bx.color);
+		box(bx.pos, bx.size);
+	}
 
 	color("light_black");
 	if(input.isPressed){
@@ -111,10 +105,27 @@ function update() {
 	line(0, G.HEIGHT/4 -5, G.WIDTH, G.HEIGHT/4 -5);
 }
 
-// timer functionailty
+// function used to spawn new box of random color and location (the randomness can be fixed later if need be)
+function spawnNewBox() {
+	let color = possibleColors[randomInt(0, possibleColors.length - 1)];
+	let box = {pos: vec(G.WIDTH*Math.random(), G.HEIGHT*0.75), color: color, size: G.BOX_SIZE};
+	boxes.push(box);	
+}
+
+// temporary logic while collision doesnt work (spawns new box every ten seconds)
+let boxSpawner = setInterval(() => {
+	spawnNewBox();
+},10000);
+
+// timer functionailty (timer decreases every second)
 let time = G.TIMER_START;
 let timer = setInterval(() => {
 	if (time > 0) {
 		time--;
 	}
 }, 1000);
+
+// helper function - generates random number between min and max (inclusive)
+function randomInt(min, max) {
+	return Math.floor(Math.random() * max + min);
+}
