@@ -22,7 +22,7 @@ LLLL
 const G = {
   WIDTH: 100,
   HEIGHT: 150,
-  TIMER_START: 3,
+  TIMER_START: 15,
   BOX_SIZE: 7,
 };
 
