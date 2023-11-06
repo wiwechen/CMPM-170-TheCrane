@@ -23,7 +23,7 @@ LLLL
 const G = {
 	WIDTH: 100,
 	HEIGHT: 150,
-	TIMER_START: 15,
+	TIMER_START:15,
 	BOX_SIZE: 7
 }
 
@@ -59,9 +59,12 @@ let boxes = [];
  * @type { Color[] }
  */
 let possibleColors = ["red", "blue", "yellow"];
+let time = -1;
+let boxSpawner = null;
 
 function update() {
 	if (!ticks) {
+		time = G.TIMER_START;
 		crane = {
 			pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.25),
 			speed: 1
@@ -74,6 +77,11 @@ function update() {
 			boxes.push(box);
 			width += 0.25;
 		}
+
+		// temporary logic while collision doesnt work (spawns new box every ten seconds)
+		boxSpawner = setInterval(() => {
+			spawnNewBox();
+			},10000);
 	}
 	// display timer text
 	text("Time: "+time, 3, 10);
@@ -112,20 +120,28 @@ function spawnNewBox() {
 	boxes.push(box);	
 }
 
-// temporary logic while collision doesnt work (spawns new box every ten seconds)
-let boxSpawner = setInterval(() => {
-	spawnNewBox();
-},10000);
+
 
 // timer functionailty (timer decreases every second)
-let time = G.TIMER_START;
+
 let timer = setInterval(() => {
 	if (time > 0) {
 		time--;
+	}else if(time==0){
+		cleanup();
+		end();
+		
+		
 	}
 }, 1000);
 
 // helper function - generates random number between min and max (inclusive)
 function randomInt(min, max) {
 	return Math.floor(Math.random() * max + min);
+}
+
+// reset things for gamestart
+function cleanup(){
+	boxes.length = 0;
+	clearInterval(boxSpawner);
 }
