@@ -59,7 +59,7 @@ let boxes = [];
  * @type { Color[] }
  */
 let possibleColors = ["red", "blue", "yellow"];
-let time = 0;
+let time = -1;
 let boxSpawner = null;
 
 function update() {
@@ -127,7 +127,7 @@ function spawnNewBox() {
 let timer = setInterval(() => {
 	if (time > 0) {
 		time--;
-	}else if(time<=0){
+	}else if(time==0){
 		cleanup();
 		end();
 		
