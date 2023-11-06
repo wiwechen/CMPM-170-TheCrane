@@ -23,7 +23,7 @@ LLLL
 const G = {
 	WIDTH: 100,
 	HEIGHT: 150,
-	TIMER_START: 15,
+	TIMER_START: 3,
 	BOX_SIZE: 7
 }
 
@@ -122,6 +122,9 @@ let time = G.TIMER_START;
 let timer = setInterval(() => {
 	if (time > 0) {
 		time--;
+	}else if(time<=0){
+		end();
+		
 	}
 }, 1000);
 
