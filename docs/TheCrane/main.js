@@ -72,17 +72,7 @@ function update() {
       speed: 1,
     };
 
-    // initialize boxes
-    let width = 0.25;
-    for (let color of possibleColors) {
-      let box = {
-        pos: vec(G.WIDTH * width, G.HEIGHT * 0.75),
-        color: color,
-        size: G.BOX_SIZE,
-      };
-      boxes.push(box);
-      width += 0.25;
-    }
+  
   }
 
   const currentTime = performance.now();
@@ -91,7 +81,7 @@ function update() {
     subTime();
   }
 
-  if (currentTime - boxTimer >= 10000) {
+  if (currentTime - boxTimer >= 1000) {
     boxTimer = currentTime;
     spawnNewBox();
   }
@@ -100,17 +90,15 @@ function update() {
     cleanup();
   }
   // display timer text
-  text("Time: " + time, 3, 10);
-  text("Target: ", 3, 20);
+  text("Time: " + time, 3, 10, {
+    color: "black",
+  });
+  text("Target: ", 3, 20, {
+    color: "black"
+  });
   text(targetColor, 50, 20, {
     color: targetColor,
   });
-
-  //creating Boxes Here
-  for (let bx of boxes) {
-    color(bx.color);
-    box(bx.pos, bx.size);
-  }
 
   color("light_black");
   if (input.isPressed) {
@@ -121,90 +109,45 @@ function update() {
     });
   } else {
     crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
-    crane.pos.x += crane.speed;
+    //crane.pos.x += crane.speed;
     char("a", crane.pos.x + 2, crane.pos.y);
     char("a", crane.pos.x - 2, crane.pos.y, {
       mirror: { x: -1 },
     });
   }
-  if (crane.pos.x > G.WIDTH || crane.pos.x < 0) crane.speed *= -1;
+  if (crane.pos.y > G.HEIGHT) {crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4); }
   line(0, G.HEIGHT / 4 - 5, G.WIDTH, G.HEIGHT / 4 - 5);
 
-  //Checks Collison on boxes here
+  // Checks Collison on boxes here
   remove(boxes, (b) => {
-    const isCollidingRedBox = char("b", crane.pos).isColliding.rect.red;
-    const isCollidingBlueBox = char("b", crane.pos).isColliding.rect.blue;
-    const isCollidingYellowBox = char("b", crane.pos).isColliding.rect.yellow;
+    color(b.color);
+    b.pos.x -= 0.5;
+    const isColliding = box(b.pos, b.size).isColliding.char.b;
 
-    if (isCollidingBlueBox) {
+    if (isColliding) {
       crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
-      spawnBlueBox();
-      if (targetColor == "blue") {
-        targetColor = possibleColors[randomInt(0, possibleColors.length)];
-        addTime(2);
-        addScore(10, b.pos);
-      }
-    } else if (isCollidingRedBox) {
-      crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
-      spawnRedBox();
-      if (targetColor == "red") {
-        targetColor = possibleColors[randomInt(0, possibleColors.length)];
-        addTime(2);
-        addScore(10, b.pos);
-      }
-    } else if (isCollidingYellowBox) {
-      crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
-      spawnYellowBox();
-      if (targetColor == "yellow") {
+      spawnNewBox();
+      if (targetColor == b.color) {
         targetColor = possibleColors[randomInt(0, possibleColors.length)];
         addTime(2);
         addScore(10, b.pos);
       }
     }
+
+    return isColliding;
   });
 }
 
 // function used to spawn new box of random color and location (the randomness can be fixed later if need be)
 function spawnNewBox() {
-  let color = possibleColors[randomInt(0, possibleColors.length - 1)];
+  let color = possibleColors[randomInt(0, possibleColors.length)];
   let box = {
-    pos: vec(G.WIDTH * Math.random(), G.HEIGHT * 0.75),
+    pos: vec(G.WIDTH + randomInt(10, 30), G.HEIGHT * 0.75),
     color: color,
     size: G.BOX_SIZE,
   };
   boxes.push(box);
 }
-
-//Spawning Back Boxes the moment they are touched:
-
-function spawnRedBox() {
-  let box = {
-    pos: vec(G.WIDTH * 0.25, G.HEIGHT * 0.75),
-    color: possibleColors[0],
-    size: G.BOX_SIZE,
-  };
-  boxes.push(box);
-}
-
-function spawnBlueBox() {
-  let box = {
-    pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.75),
-    color: possibleColors[1],
-    size: G.BOX_SIZE,
-  };
-  boxes.push(box);
-}
-
-function spawnYellowBox() {
-  let box = {
-    pos: vec(G.WIDTH * 0.75, G.HEIGHT * 0.75),
-    color: possibleColors[2],
-    size: G.BOX_SIZE,
-  };
-  boxes.push(box);
-}
-
-// timer functionailty (timer decreases every second)
 
 // helper function - generates random number between min and max (inclusive)
 function randomInt(min, max) {
