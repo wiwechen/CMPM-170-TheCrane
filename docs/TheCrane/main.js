@@ -153,7 +153,6 @@ function cleanup() {
 
 function subTime() {
   if (time > 0) {
-    console.log(new Date());
     time -= 1;
   }
 }
