@@ -60,21 +60,12 @@ let boxes = [];
 let possibleColors = ["red", "blue", "yellow"];
 let time = -1;
 let boxSpawner = null;
-let timer = null
+let lastTimer = performance.now();
+let boxTimer = performance.now();
 
 function update() {
   if (!ticks) {
     time = G.TIMER_START;
-
-    timer = setInterval(() => {
-      if (time > 0) {
-        time--;
-      } else if (time == 0) {
-        cleanup();
-        end();
-      }
-    }, 1000);
-
     crane = {
       pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.25),
       speed: 1,
@@ -91,11 +82,21 @@ function update() {
       boxes.push(box);
       width += 0.25;
     }
+  }
 
-    // temporary logic while collision doesnt work (spawns new box every ten seconds)
-    boxSpawner = setInterval(() => {
-      spawnNewBox();
-    }, 10000);
+  const currentTime = performance.now();
+  if (currentTime - lastTimer >= 1000) {
+    lastTimer = currentTime;
+    subTime();
+  }
+
+  if (currentTime - boxTimer >= 10000) {
+    boxTimer = currentTime;
+    spawnNewBox();
+  }
+
+  if (time == 0) {
+    cleanup();
   }
   // display timer text
   text("Time: " + time, 3, 10);
@@ -147,5 +148,12 @@ function randomInt(min, max) {
 function cleanup() {
   boxes.length = 0;
   clearInterval(boxSpawner);
-  clearInterval(timer)
+  end();
+}
+
+function subTime() {
+  if (time > 0) {
+    console.log(new Date());
+    time -= 1;
+  }
 }
