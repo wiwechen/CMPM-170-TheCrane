@@ -33,7 +33,8 @@ options = {
 /**
  * @typedef {{
 * pos: Vector,
-* speed: number 
+* speed: number,
+* isFalling: boolean
 * }} Player
 */
 
@@ -46,21 +47,24 @@ function update() {
 	if (!ticks) {
 		crane = {
 			pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.25),
-			speed: 1
+			speed: 1,
+			isFalling: false
 		};
 	}
 	// display timer text
 	text("Time: "+time, 3, 10);
 
 	//color("cyan");
-	if(input.isPressed){
+	if(input.isJustPressed){
+		crane.isFalling = true;
+	}
+	if(crane.isFalling) {
 		crane.pos.y += 1;
 		char("b", crane.pos.x + 2, crane.pos.y );
 		char("b", crane.pos.x - 2, crane.pos.y , {
 			mirror: {x : -1}
 		})
-	}
-	else{
+	} else {
 		crane.pos.y == G.HEIGHT/4 ? 0 : crane.pos.y = G.HEIGHT/4;
 		crane.pos.x += crane.speed;
 		char("a", crane.pos.x + 2, crane.pos.y);
