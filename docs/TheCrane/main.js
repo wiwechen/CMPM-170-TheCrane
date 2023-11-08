@@ -101,16 +101,16 @@ function update() {
   }
   // display timer text
   text("Time: " + time, 3, 10);
-  text("Target: " + targetColor, 3, 20);
-
+  text("Target: ", 3, 20);
+  text(targetColor, 50, 20, {
+    color: targetColor,
+  });
 
   //creating Boxes Here
   for (let bx of boxes) {
     color(bx.color);
     box(bx.pos, bx.size);
   }
-
-
 
   color("light_black");
   if (input.isPressed) {
@@ -129,42 +129,39 @@ function update() {
   }
   if (crane.pos.x > G.WIDTH || crane.pos.x < 0) crane.speed *= -1;
   line(0, G.HEIGHT / 4 - 5, G.WIDTH, G.HEIGHT / 4 - 5);
-  
-
 
   //Checks Collison on boxes here
   remove(boxes, (b) => {
-	const isCollidingRedBox = char("b", crane.pos).isColliding.rect.red;
-  	const isCollidingBlueBox = char("b", crane.pos).isColliding.rect.blue;
-  	const isCollidingYellowBox = char("b", crane.pos).isColliding.rect.yellow;
+    const isCollidingRedBox = char("b", crane.pos).isColliding.rect.red;
+    const isCollidingBlueBox = char("b", crane.pos).isColliding.rect.blue;
+    const isCollidingYellowBox = char("b", crane.pos).isColliding.rect.yellow;
 
-	if(isCollidingBlueBox){
-		crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
-		spawnBlueBox();
-		if(targetColor == "blue"){
-			targetColor = possibleColors[randomInt(0, possibleColors.length)];
-			addScore(10, b.pos);
-		}
-		
-	}else if (isCollidingRedBox){
-		crane.pos.y == G.HEIGHT / 4 ? 0: (crane.pos.y = G.HEIGHT/4);
-		spawnRedBox();
-		if(targetColor == "red"){
-			targetColor = possibleColors[randomInt(0, possibleColors.length)];
-			addScore(10, b.pos);
-		}
-		
-	}else if (isCollidingYellowBox){
-		crane.pos.y == G.HEIGHT / 4 ? 0: (crane.pos.y = G.HEIGHT/4);
-		spawnYellowBox();
-		if(targetColor == "yellow"){
-			targetColor = possibleColors[randomInt(0, possibleColors.length)];
-			addScore(10, b.pos);
-		}
-		
-	}
+    if (isCollidingBlueBox) {
+      crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
+      spawnBlueBox();
+      if (targetColor == "blue") {
+        targetColor = possibleColors[randomInt(0, possibleColors.length)];
+        addTime(2);
+        addScore(10, b.pos);
+      }
+    } else if (isCollidingRedBox) {
+      crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
+      spawnRedBox();
+      if (targetColor == "red") {
+        targetColor = possibleColors[randomInt(0, possibleColors.length)];
+        addTime(2);
+        addScore(10, b.pos);
+      }
+    } else if (isCollidingYellowBox) {
+      crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
+      spawnYellowBox();
+      if (targetColor == "yellow") {
+        targetColor = possibleColors[randomInt(0, possibleColors.length)];
+        addTime(2);
+        addScore(10, b.pos);
+      }
+    }
   });
-
 }
 
 // function used to spawn new box of random color and location (the randomness can be fixed later if need be)
@@ -180,31 +177,31 @@ function spawnNewBox() {
 
 //Spawning Back Boxes the moment they are touched:
 
-function spawnRedBox(){
-	let box = {
-		pos: vec( G.WIDTH * 0.25, G.HEIGHT * 0.75),
-		color: possibleColors[0],
-		size: G.BOX_SIZE,
-	};
-	boxes.push(box);
+function spawnRedBox() {
+  let box = {
+    pos: vec(G.WIDTH * 0.25, G.HEIGHT * 0.75),
+    color: possibleColors[0],
+    size: G.BOX_SIZE,
+  };
+  boxes.push(box);
 }
 
-function spawnBlueBox(){
-	let box = {
-		pos: vec( G.WIDTH * 0.5, G.HEIGHT * 0.75),
-		color: possibleColors[1],
-		size: G.BOX_SIZE,
-	};
-	boxes.push(box);
+function spawnBlueBox() {
+  let box = {
+    pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.75),
+    color: possibleColors[1],
+    size: G.BOX_SIZE,
+  };
+  boxes.push(box);
 }
 
-function spawnYellowBox(){
-	let box = {
-		pos: vec( G.WIDTH * 0.75, G.HEIGHT * 0.75),
-		color: possibleColors[2],
-		size: G.BOX_SIZE,
-	};
-	boxes.push(box);
+function spawnYellowBox() {
+  let box = {
+    pos: vec(G.WIDTH * 0.75, G.HEIGHT * 0.75),
+    color: possibleColors[2],
+    size: G.BOX_SIZE,
+  };
+  boxes.push(box);
 }
 
 // timer functionailty (timer decreases every second)
@@ -225,4 +222,8 @@ function subTime() {
   if (time > 0) {
     time -= 1;
   }
+}
+
+function addTime(num) {
+  time += num;
 }
