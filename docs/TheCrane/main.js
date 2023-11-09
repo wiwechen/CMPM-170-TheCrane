@@ -62,7 +62,9 @@ let time = -1;
 let boxSpawner = null;
 let lastTimer = performance.now();
 let boxTimer = performance.now();
+let timeElapsed = performance.now();
 let targetColor = possibleColors[randomInt(0, possibleColors.length)];
+let boxSpeed = 0.5;
 
 function update() {
   if (!ticks) {
@@ -71,8 +73,6 @@ function update() {
       pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.25),
       speed: 1,
     };
-
-  
   }
 
   const currentTime = performance.now();
@@ -86,6 +86,11 @@ function update() {
     spawnNewBox();
   }
 
+  if (currentTime - timeElapsed >= 2000) {
+    timeElapsed = currentTime;
+    boxSpeed += 0.02;
+  }
+
   if (time == 0) {
     cleanup();
   }
@@ -94,7 +99,7 @@ function update() {
     color: "black",
   });
   text("Target: ", 3, 20, {
-    color: "black"
+    color: "black",
   });
   text(targetColor, 50, 20, {
     color: targetColor,
@@ -103,6 +108,7 @@ function update() {
   color("light_black");
   if (input.isPressed) {
     crane.pos.y += 1;
+    play("hit");
     char("b", crane.pos.x + 2, crane.pos.y);
     char("b", crane.pos.x - 2, crane.pos.y, {
       mirror: { x: -1 },
@@ -115,22 +121,28 @@ function update() {
       mirror: { x: -1 },
     });
   }
-  if (crane.pos.y > G.HEIGHT) {crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4); }
+  if (crane.pos.y > G.HEIGHT) {
+    crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
+  }
   line(0, G.HEIGHT / 4 - 5, G.WIDTH, G.HEIGHT / 4 - 5);
 
   // Checks Collison on boxes here
   remove(boxes, (b) => {
     color(b.color);
-    b.pos.x -= 0.5;
+    b.pos.x -= boxSpeed;
     const isColliding = box(b.pos, b.size).isColliding.char.b;
 
     if (isColliding) {
       crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
       spawnNewBox();
       if (targetColor == b.color) {
+        play("coin");
         targetColor = possibleColors[randomInt(0, possibleColors.length)];
-        addTime(2);
+        addTime(5);
         addScore(10, b.pos);
+      }
+      else {
+        play("laser");
       }
     }
 
@@ -138,9 +150,16 @@ function update() {
   });
 }
 
-// function used to spawn new box of random color and location (the randomness can be fixed later if need be)
+// function used to spawn new box of random color and location
 function spawnNewBox() {
-  let color = possibleColors[randomInt(0, possibleColors.length)];
+  let color;
+  // 45% chance that the target color is spawned
+  if (Math.random() <= 0.45) {
+    color = targetColor;
+  }
+  else {
+    color = possibleColors[randomInt(0, possibleColors.length)];
+  }
   let box = {
     pos: vec(G.WIDTH + randomInt(10, 30), G.HEIGHT * 0.75),
     color: color,
@@ -156,6 +175,7 @@ function randomInt(min, max) {
 
 // reset things for gamestart
 function cleanup() {
+  boxSpeed = 0.5;
   boxes.length = 0;
   clearInterval(boxSpawner);
   end();
