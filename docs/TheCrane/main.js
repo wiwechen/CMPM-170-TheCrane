@@ -1,6 +1,6 @@
 title = "The Crane Game!";
 
-description = `
+description = `Grab the items!
 `;
 
 characters = [
@@ -28,6 +28,9 @@ const G = {
 
 options = {
   viewSize: { x: G.WIDTH, y: G.HEIGHT },
+  seed: 8,
+  isPlayingBgm: true,
+  theme: "pixel"
 };
 
 /**
@@ -135,6 +138,7 @@ function update() {
     if (isColliding) {
       crane.pos.y == G.HEIGHT / 4 ? 0 : (crane.pos.y = G.HEIGHT / 4);
       spawnNewBox();
+      particle(b.pos, 10, 2);
       if (targetColor == b.color) {
         play("coin");
         targetColor = possibleColors[randomInt(0, possibleColors.length)];
