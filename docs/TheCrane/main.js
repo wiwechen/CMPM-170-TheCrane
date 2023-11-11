@@ -30,7 +30,7 @@ options = {
   viewSize: { x: G.WIDTH, y: G.HEIGHT },
   seed: 8,
   isPlayingBgm: true,
-  theme: "pixel"
+  theme: "pixel",
 };
 
 /**
@@ -88,10 +88,13 @@ function update() {
     boxTimer = currentTime;
     spawnNewBox();
   }
+  console.log(boxSpeed);
+  // if (currentTime - timeElapsed >= 10000) {
+  //   timeElapsed = currentTime;
+  //   boxSpeed *= 1.25;
+  // }
 
-  if (currentTime - timeElapsed >= 2000) {
-    timeElapsed = currentTime;
-    boxSpeed += 0.02;
+  switch (score) {
   }
 
   if (time == 0) {
@@ -144,9 +147,10 @@ function update() {
         targetColor = possibleColors[randomInt(0, possibleColors.length)];
         addTime(5);
         addScore(10, b.pos);
-      }
-      else {
+      } else {
         play("laser");
+        addScore(-5, b.pos);
+        addTime(-1);
       }
     }
 
@@ -158,10 +162,10 @@ function update() {
 function spawnNewBox() {
   let color;
   // 45% chance that the target color is spawned
+
   if (Math.random() <= 0.45) {
     color = targetColor;
-  }
-  else {
+  } else {
     color = possibleColors[randomInt(0, possibleColors.length)];
   }
   let box = {
