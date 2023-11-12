@@ -146,6 +146,7 @@ function update() {
         addScore(10, b.pos);
       }
       else {
+        addTime(-1);
         play("laser");
       }
     }
